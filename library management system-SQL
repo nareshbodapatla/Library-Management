@@ -1,0 +1,347 @@
+create database library;
+                                                             /* ======================= TABLES ========================*
+Table: Books
+
+CREATE TABLE Books (
+  book_id INT PRIMARY KEY,
+  title VARCHAR(100) NOT NULL,
+  author_id INT,
+  genre_id INT,
+  publication_year INT,
+  status VARCHAR(20),
+  FOREIGN KEY (author_id) REFERENCES Authors(author_id),
+  FOREIGN KEY (genre_id) REFERENCES Genres(genre_id)
+);
+
+Table: Members
+
+CREATE TABLE Members (
+  member_id INT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(100) NOT NULL,
+  phone VARCHAR(20),
+  address VARCHAR(200)
+);
+
+Table: Transactions
+
+CREATE TABLE Transactions (
+  transaction_id INT PRIMARY KEY,
+  book_id INT,
+  member_id INT,
+  borrow_date DATE,
+  return_date DATE,
+  FOREIGN KEY (book_id) REFERENCES Books(book_id),
+  FOREIGN KEY (member_id) REFERENCES Members(member_id)
+);
+
+Table: Authors
+
+CREATE TABLE Authors (
+  author_id INT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  biography TEXT,
+  nationality VARCHAR(100)
+);
+
+Table: Genres
+
+CREATE TABLE Genres (
+  genre_id INT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL
+);
+Table: Publishers
+
+CREATE TABLE Publishers (
+  publisher_id INT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  address VARCHAR(200),
+  contact VARCHAR(20)
+);
+Table: BookCopies
+
+CREATE TABLE BookCopies (
+  copy_id INT PRIMARY KEY,
+  book_id INT,
+  location VARCHAR(100),
+  availability VARCHAR(20),
+  FOREIGN KEY (book_id) REFERENCES Books(book_id)
+);
+                                                            /*======================== END TABLES ==========================*/
+
+
+                                                           /*==================== INSERTING INTO TABLES ======================*/
+Table: Books
+INSERT INTO Books (book_id, title, author_id, genre_id, publication_year, status)
+VALUES
+  (1, 'To Kill a Mockingbird', 1, 1, 1960, 'Available'),
+  (2, 'Pride and Prejudice', 2, 1, 1813, 'Available'),
+  (3, '1984', 3, 2, 1949, 'Borrowed'),
+  (4, 'The Great Gatsby', 4, 2, 1925, 'Available'),
+  (5, 'Harry Potter and the Sorcerer''s Stone', 5, 3, 1997, 'Borrowed');
+
+select * from Books 
+
+Table: Members
+INSERT INTO Members (member_id, name, email, phone, address)
+VALUES
+  (1, 'John Doe', 'johndoe@example.com', '1234567890', '123 Main St'),
+  (2, 'Jane Smith', 'janesmith@example.com', '9876543210', '456 Elm St'),
+  (3, 'David Johnson', 'davidjohnson@example.com', '5555555555', '789 Oak Ave'),
+  (4, 'Emma Wilson', 'emmawilson@example.com', '1112223333', '321 Pine St'),
+  (5, 'Michael Brown', 'michaelbrown@example.com', '4445556666', '567 Maple Ave');
+
+select * from Members 
+
+Table: Transactions
+INSERT INTO Transactions (transaction_id, book_id, member_id, borrow_date, return_date)
+VALUES
+  (1, 1, 1, '2023-06-01', '2023-06-15'),
+  (2, 2, 2, '2023-06-05', '2023-06-20'),
+  (3, 3, 3, '2023-06-08', '2023-06-22'),
+  (4, 4, 1, '2023-06-10', '2023-06-25'),
+  (5, 5, 2, '2023-06-15', '2023-06-30');
+
+select * from Transactions
+
+Table: Authors
+INSERT INTO Authors (author_id, name, biography, nationality)
+VALUES
+  (1, 'Harper Lee', 'Harper Lee biography', 'American'),
+  (2, 'Jane Austen', 'Jane Austen biography', 'British'),
+  (3, 'George Orwell', 'George Orwell biography', 'British'),
+  (4, 'F. Scott Fitzgerald', 'F. Scott Fitzgerald biography', 'American'),
+  (5, 'J.K. Rowling', 'J.K. Rowling biography', 'British');
+
+select * from Authors
+
+Table: Genres
+INSERT INTO Genres (genre_id, name)
+VALUES
+  (1, 'Fiction'),
+  (2, 'Mystery'),
+  (3, 'Fantasy'),
+  (4, 'Science Fiction'),
+  (5, 'Romance');
+
+select * from Genres
+
+Table: Publishers
+INSERT INTO Publishers (publisher_id, name, address, contact)
+VALUES
+  (1, 'Penguin Random House', '375 Hudson Street, New York, NY 10014, USA', '+1-212-366-2000'),
+  (2, 'HarperCollins Publishers', '195 Broadway, New York, NY 10007, USA', '+1-212-207-7000'),
+  (3, 'Simon & Schuster', '1230 Avenue of the Americas, New York, NY 10020, USA', '+1-212-698-7000'),
+  (4, 'Macmillan Publishers', '120 Broadway, New York, NY 10271, USA', '+1-646-307-5151'),
+  (5, 'Hachette Book Group', '1290 Avenue of the Americas, New York, NY 10104, USA', '+1-212-364-1100');
+
+select * from Publishers
+
+Table: BookCopies
+INSERT INTO BookCopies (copy_id, book_id, location, availability)
+VALUES
+  (1, 1, 'Fiction Section, Shelf 1', 'Available'),
+  (2, 2, 'Mystery Section, Shelf 2', 'Available'),
+  (3, 3, 'Fantasy Section, Shelf 3', 'Borrowed'),
+  (4, 4, 'Science Fiction Section, Shelf 4', 'Available'),
+  (5, 5, 'Romance Section, Shelf 5', 'Borrowed');
+  
+  select * from BookCopies
+
+                                                              /*====================== QUERIES =======================*/
+ 
+#1
+Query: What are the available books in the library?
+Answer: To retrieve the available books in the library, you can execute the following query:
+SELECT title FROM Books WHERE status = 'Available';
+
+#2
+Query: How many books are currently borrowed?
+Answer: You can determine the number of currently borrowed books using the following 
+SELECT COUNT(*) AS borrowed_count FROM Books WHERE status = 'Borrowed';
+
+#3
+Query: Who is the author of the book "To Kill a Mockingbird"?
+Answer: To find the author of a specific book, execute the following query:
+SELECT a.name AS author_name
+FROM Authors a
+INNER JOIN Books b ON a.author_id = b.author_id
+WHERE b.title = 'To Kill a Mockingbird';
+
+#4
+Query: How many books has member ID 3 borrowed?
+Answer: To determine the number of books borrowed by a specific member, execute the following query:
+SELECT COUNT(*) AS borrowed_count FROM Transactions WHERE member_id = 3;
+
+#5
+Query: What is the due date for the book "Harry Potter and the Philosopher's Stone"?
+Answer: To retrieve the due date for a specific book, execute the following query:
+SELECT return_date
+FROM Transactions
+WHERE book_id = (SELECT book_id FROM Books WHERE title = 'Harry Potter and the Philosopher\'s Stone');
+
+#6
+Query: Which books are published in the year 2021?
+Answer: To find the books published in a specific year, execute the following query:
+SELECT title FROM Books WHERE publication_year = 2021;
+
+#7
+Query: Who are the members who have borrowed books?
+Answer: To list the members who have borrowed books, execute the following query:
+SELECT name FROM Members WHERE member_id IN (SELECT DISTINCT member_id FROM Transactions);
+
+#8
+Query: How many books are available in the Mystery genre?
+Answer: You can determine the number of available books in a specific genre using the following query:
+SELECT COUNT(*) AS available_count FROM Books WHERE genre_id = (SELECT genre_id FROM Genres WHERE name = 'Mystery') AND status = 'Available';
+
+#9
+Query: What is the average publication year of the books in the library?
+Answer: To calculate the average publication year of the books, execute the following query:
+SELECT AVG(publication_year) AS average_publication_year FROM Books;
+
+#10
+Query: What are the books borrowed by member ID 5?
+Answer: To retrieve the books borrowed by a specific member, execute the following query:
+SELECT b.title
+FROM Books b
+INNER JOIN Transactions t ON b.book_id = t.book_id
+WHERE t.member_id = 5;
+
+#11
+Query: Retrieve the top 5 most borrowed books.
+Answer:
+SELECT b.title, COUNT(t.transaction_id) AS borrow_count
+FROM Books b
+INNER JOIN Transactions t ON b.book_id = t.book_id
+GROUP BY b.book_id
+ORDER BY borrow_count DESC
+LIMIT 5;
+
+#12
+Query: List the books that are currently borrowed and their borrowers.
+Answer:
+SELECT b.title, m.name AS borrower_name
+FROM Books b
+INNER JOIN Transactions t ON b.book_id = t.book_id
+INNER JOIN Members m ON t.member_id = m.member_id
+WHERE b.status = 'Borrowed';
+
+#13
+Query: Get the total count of books in each genre and display them in descending order.
+Answer:
+SELECT g.name AS genre, COUNT(b.book_id) AS book_count
+FROM Genres g
+LEFT JOIN Books b ON g.genre_id = b.genre_id
+GROUP BY g.genre_id
+ORDER BY book_count DESC;
+
+#14
+Query: Find the books that have not been borrowed yet.
+Answer:
+SELECT title
+FROM Books
+WHERE book_id NOT IN (SELECT DISTINCT book_id FROM Transactions);
+
+#15
+Query: Calculate the average number of books borrowed per member.
+Answer:
+SELECT AVG(borrow_count) AS average_borrow_count
+FROM (SELECT member_id, COUNT(*) AS borrow_count FROM Transactions GROUP BY member_id) AS subquery;
+
+#16
+Query: Retrieve the members who have never borrowed a book.
+Answer:
+SELECT name
+FROM Members
+WHERE member_id NOT IN (SELECT DISTINCT member_id FROM Transactions);
+
+#17
+Query: Get the top 5 authors with the most books published.
+Answer:
+SELECT a.name AS author_name, COUNT(b.book_id) AS book_count
+FROM Authors a
+LEFT JOIN Books b ON a.author_id = b.author_id
+GROUP BY a.author_id
+ORDER BY book_count DESC
+LIMIT 5;
+
+#18
+Query: Calculate the average availability ratio of books (percentage of available books).
+Answer:
+SELECT (COUNT(CASE WHEN status = 'Available' THEN 1 END) / COUNT(*) * 100) AS availability_ratio
+FROM Books;
+
+#19
+Query: List the members who have borrowed all available books.
+Answer:
+SELECT m.name
+FROM Members m
+INNER JOIN (
+  SELECT member_id, COUNT(DISTINCT book_id) AS total_books
+  FROM Transactions
+  GROUP BY member_id
+) t ON m.member_id = t.member_id
+WHERE t.total_books = (SELECT COUNT(*) FROM Books WHERE status = 'Available');
+
+#20
+Query: Retrieve the members who have borrowed books from multiple genres.
+Answer:
+SELECT m.name
+FROM Members m
+INNER JOIN (
+  SELECT member_id, COUNT(DISTINCT b.genre_id) AS distinct_genres
+  FROM Transactions t
+  INNER JOIN Books b ON t.book_id = b.book_id
+  GROUP BY member_id
+) g ON m.member_id = g.member_id
+WHERE g.distinct_gen
+
+#21
+Query: Calculate the total number of books borrowed per month in a given year.
+Answer:
+SELECT DATE_FORMAT(t.borrow_date, '%Y-%m') AS month, COUNT(t.transaction_id) AS borrow_count
+FROM Transactions t
+WHERE YEAR(t.borrow_date) = 2022
+GROUP BY month;
+
+#23
+Query: Calculate the average borrowing duration (in days) for each book.
+Answer:
+SELECT b.title, AVG(DATEDIFF(t.return_date, t.borrow_date)) AS average_duration
+FROM Books b
+INNER JOIN Transactions t ON b.book_id = t.book_id
+GROUP BY b.book_id;
+
+#24
+Query: Retrieve the members who have borrowed books from all available genres.
+Answer:
+SELECT m.name
+FROM Members m
+INNER JOIN (
+    SELECT DISTINCT member_id, COUNT(DISTINCT genre_id) AS genre_count
+    FROM Transactions t
+    INNER JOIN Books b ON t.book_id = b.book_id
+    GROUP BY member_id
+) AS subquery ON m.member_id = subquery.member_id
+WHERE subquery.genre_count = (SELECT COUNT(*) FROM Genres);
+
+#25
+Query: Find the books that have been borrowed the most in each genre.
+Answer:
+SELECT g.name AS genre, b.title, COUNT(t.transaction_id) AS borrow_count
+FROM Genres g
+INNER JOIN Books b ON g.genre_id = b.genre_id
+INNER JOIN Transactions t ON b.book_id = t.book_id
+GROUP BY g.genre_id, b.book_id
+HAVING COUNT(t.transaction_id) = (
+    SELECT MAX(borrow_count)
+    FROM (
+        SELECT g.genre_id, b.book_id, COUNT(t.transaction_id) AS borrow_count
+        FROM Genres g
+        INNER JOIN Books b ON g.genre_id = b.genre_id
+        INNER JOIN Transactions t ON b.book_id = t.book_id
+        GROUP BY g.genre_id, b.book_id
+    ) AS subquery
+    WHERE subquery.genre_id = g.genre_id
+);
